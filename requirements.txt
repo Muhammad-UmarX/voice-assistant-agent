@@ -1,0 +1,32 @@
+# LangChain / LangGraph
+langgraph
+langchain
+langchain-core
+langchain-openai
+langchain-google-genai
+langchain-openrouter
+
+# Environment / configuration
+python-dotenv
+
+# Fuzzy matching
+rapidfuzz
+
+# Windows-specific
+pywin32
+psutil
+
+# Voice
+faster-whisper
+sounddevice
+scipy
+
+# GUI
+customtkinter
+
+# Testing
+pytest
+pytest-mock
+
+# Optional: LangSmith tracing
+langsmith
