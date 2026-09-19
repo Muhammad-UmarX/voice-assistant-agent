@@ -5,6 +5,7 @@ langchain-core
 langchain-openai
 langchain-google-genai
 langchain-openrouter
+langchain-huggingface
 
 # Environment / configuration
 python-dotenv
