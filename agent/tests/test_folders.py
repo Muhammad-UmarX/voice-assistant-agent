@@ -1,7 +1,10 @@
-import pytest
-from unittest.mock import patch, MagicMock
-from tools import folders
 import os
+from unittest.mock import patch, MagicMock
+
+import pytest
+
+from tools import folders
+
 
 @pytest.fixture
 def temp_folder(tmp_path):

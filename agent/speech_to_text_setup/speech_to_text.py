@@ -1,5 +1,5 @@
-from faster_whisper import WhisperModel
 import sounddevice as sd
+from faster_whisper import WhisperModel
 from scipy.io.wavfile import write
 
 
@@ -32,7 +32,7 @@ def record_audio(filename="input.wav"):
     return filename
 
 def speech_to_text(audio_file):
-    segments, info = whisper_model.transcribe(
+    segments, _ = whisper_model.transcribe(
         audio_file
     )
 

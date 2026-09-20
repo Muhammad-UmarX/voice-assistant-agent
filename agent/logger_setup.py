@@ -1,5 +1,6 @@
 import logging
 
+
 def set_logger(level=logging.DEBUG, 
                handler_name="logs.log", 
                format='%(asctime)s | %(levelname)s | %(name)s | %(message)s', 

@@ -1,5 +1,6 @@
-from state import AssistantState
 import logging
+
+from state import AssistantState
 
 logger = logging.getLogger(__name__)
 

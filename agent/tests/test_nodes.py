@@ -1,8 +1,10 @@
-import pytest
 from unittest.mock import patch, MagicMock
-import nodes
+
+import pytest
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langgraph.graph import END
+
+import nodes
 
 # Integration Test
 def test_tool_node():
@@ -126,9 +128,8 @@ def test_tool_node_raises_when_tool_invoke_fails():
         ]
     }
 
-    with patch("nodes.get_tools", return_value=fake_registry):
-        with pytest.raises(RuntimeError):
-            nodes.tool_node(state)
+    with patch("nodes.get_tools", return_value=fake_registry), pytest.raises(RuntimeError):
+        nodes.tool_node(state)
 
 
 # ---------------------------------------------------------------------------

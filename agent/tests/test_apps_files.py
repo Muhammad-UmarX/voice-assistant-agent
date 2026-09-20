@@ -1,8 +1,10 @@
-import pytest
 from unittest.mock import patch, MagicMock
-from tools import apps_files
-import win32con
+
 import psutil
+import pytest
+import win32con
+
+from tools import apps_files
 
 # TEST FILE / FOLDER OPENING
 

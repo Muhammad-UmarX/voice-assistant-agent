@@ -1,3 +1,10 @@
+import glob
+import logging
+import os
+import time
+import psutil
+from functools import lru_cache
+
 try:
     from rapidfuzz import process
     HAVE_RAPIDFUZZ = True
@@ -11,17 +18,11 @@ except ImportError:
     HAVE_WIN32COM = False
 
 from langchain_core.tools import tool
-from functools import lru_cache
-import os
-import psutil
+from rapidfuzz import process as fuzzy_process
+
 import win32gui
 import win32process
 import win32con
-import time
-import glob
-import shutil
-from rapidfuzz import process as fuzzy_process
-import logging
 
 logger = logging.getLogger(__name__)
 

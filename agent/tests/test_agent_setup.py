@@ -1,7 +1,8 @@
-import pytest
 from unittest.mock import MagicMock
-import agent_setup
+import pytest
 from langchain_core.messages import AIMessage, HumanMessage
+
+import agent_setup
 
 
 # ---------------------------------------------------------------------------
@@ -28,15 +29,17 @@ def test_build_agent_success():
 
 
 def test_build_agent_fail_bind(caplog):
+
     tools = [MagicMock()]
     prompt = MagicMock()
 
     llm = MagicMock()
     llm.bind_tools.side_effect = RuntimeError("bind failed")
 
-    with caplog.at_level("ERROR"):
-        with pytest.raises(RuntimeError, match="bind failed"):
-            agent_setup.build_agent(llm, prompt, tools)
+    with caplog.at_level("ERROR"), pytest.raises(
+        RuntimeError, match="bind failed"
+    ):
+        agent_setup.build_agent(llm, prompt, tools)
 
     assert "Failed to build agent" in caplog.text
 
@@ -51,9 +54,8 @@ def test_build_agent_pipe_fail(caplog):
     prompt = MagicMock()
     prompt.__or__.side_effect = ValueError("pipe failed")
 
-    with caplog.at_level("ERROR"):
-        with pytest.raises(ValueError, match="pipe failed"):
-            agent_setup.build_agent(llm, prompt, tools)
+    with caplog.at_level("ERROR"), pytest.raises(ValueError, match="pipe failed"):
+        agent_setup.build_agent(llm, prompt, tools)
 
     assert "Failed to build agent" in caplog.text
 

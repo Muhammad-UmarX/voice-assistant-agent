@@ -16,8 +16,7 @@ Adjust the two ASSUMPTIONS below to match your actual code:
    the fakes accordingly.
 """
 import pytest
-from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
-from langgraph.types import Command
+from langchain_core.messages import AIMessage, ToolMessage
 
 from test_helpers import FakeLLM, make_workflow
 from main import action, normalize_approval

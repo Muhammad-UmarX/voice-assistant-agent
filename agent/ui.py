@@ -22,8 +22,8 @@ Run with:  python gui.py
 (requires customtkinter: pip install customtkinter)
 """
 
-import threading
 import queue
+import threading
 import traceback
 from datetime import datetime
 
@@ -161,7 +161,7 @@ class DialogueApp(ctk.CTk):
         self.logger = None
         self.config = {"configurable": {"thread_id": 123}}
 
-        self._event_queue: "queue.Queue[tuple[str, object]]" = queue.Queue()
+        self._event_queue: queue.Queue[tuple[str, object]] = queue.Queue()
         self._busy = False
         self._think_job = None
         self._think_dots = 0

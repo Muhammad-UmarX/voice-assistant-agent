@@ -1,8 +1,10 @@
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from prompts.base_prompt import base_prompt
-from prompts.apps_files_prompt import apps_files_prompt
-from prompts.folder_prompt import folder_prompt 
+
 from policies import safety_policy
+from prompts.apps_files_prompt import apps_files_prompt
+from prompts.base_prompt import base_prompt
+from prompts.folder_prompt import folder_prompt 
+
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", 
