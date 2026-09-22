@@ -12,7 +12,7 @@ from nodes import agent_node, tool_node
 from prompts.prompt import prompt
 from state import AssistantState
 from tools.registry import get_tools
-from workflow import build_workflow
+from agent_workflow import build_workflow
 
 
 def build_app():

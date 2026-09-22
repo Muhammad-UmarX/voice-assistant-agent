@@ -4,10 +4,17 @@ import string
 import ctypes
 from ctypes import windll
 import shutil
+import pythoncom
 
 from rapidfuzz import process
 from rapidfuzz import process as fuzzy_process
 import win32com.client
+
+try:
+    import win32com.client
+    HAVE_WIN32COM = True
+except ImportError:
+    HAVE_WIN32COM = False
 
 from langchain_core.tools import tool
 
@@ -108,6 +115,8 @@ def search_folder_via_index(name: str, limit: int = 5) -> list:
         limit
     )
 
+    pythoncom.CoInitialize()
+
     try:
         conn = win32com.client.Dispatch("ADODB.Connection")
 
@@ -148,6 +157,9 @@ def search_folder_via_index(name: str, limit: int = 5) -> list:
         )
         return []
 
+    finally:
+        pythoncom.CoUninitialize()
+
 
 @tool
 def open_folder_via_index(name: str) -> bool:
@@ -183,6 +195,53 @@ def open_folder_via_index(name: str) -> bool:
 # ==============================================================================================
 
 @tool
+def list_open_folders() -> list[dict]:
+    """
+    List all File Explorer windows that are currently open.
+
+    Use this before close_folder_by_path to find the HWND of the
+    window you want to close.
+
+    Returns:
+        list[dict]: One entry per open Explorer window:
+            {"hwnd": 123456, "path": "C:\\Users\\You\\Documents", "name": "Documents"}
+    """
+
+    logger.debug("Listing open File Explorer windows")
+
+    if not HAVE_WIN32COM:
+        logger.warning("win32com unavailable, skipping Explorer window search")
+        return []
+
+    pythoncom.CoInitialize()
+
+    try:
+        shell = win32com.client.Dispatch("Shell.Application")
+        results = []
+
+        for window in shell.Windows():
+            try:
+                # Shell.Windows() can also include Internet Explorer windows
+                if os.path.basename(window.FullName).lower() != "explorer.exe":
+                    continue
+
+                results.append({
+                    "hwnd": window.HWND,
+                    "path": window.Document.Folder.Self.Path,
+                    "name": window.LocationName,
+                })
+
+            except Exception:
+                # Some windows raise errors while loading or closing; skip them
+                continue
+
+        logger.info("Found %d open File Explorer window(s)", len(results))
+        return results
+    
+    finally:
+        pythoncom.CoUninitialize()
+
+@tool
 def close_folder_by_path(target_path_handler: int):
     """
     Close one or more open File Explorer windows whose folder HWND matches
@@ -205,35 +264,45 @@ def close_folder_by_path(target_path_handler: int):
         target_path_handler
     )
 
-    shell = win32com.client.Dispatch("Shell.Application")
-    windows = shell.Windows()
+    if not HAVE_WIN32COM:
+        logger.warning("win32com unavailable, skipping Explorer window close")
+        return 0
 
-    closed = 0
+    pythoncom.CoInitialize()
 
-    for window in list(windows):
-        try:
-            path_handler = window.HWND
+    try:
+        shell = win32com.client.Dispatch("Shell.Application")
+        windows = shell.Windows()
 
-            if target_path_handler == path_handler:
-                window.Quit()
-                closed += 1
+        closed = 0
 
-        except Exception:
-            continue
+        for window in list(windows):
+            try:
+                path_handler = window.HWND
 
-    if closed:
-        logger.info(
-            "Closed %d File Explorer window(s) with HWND %s",
-            closed,
-            target_path_handler
-        )
-    else:
-        logger.debug(
-            "No File Explorer window found with HWND %s",
-            target_path_handler
-        )
+                if target_path_handler == path_handler:
+                    window.Quit()
+                    closed += 1
 
-    return closed
+            except Exception:
+                continue
+
+        if closed:
+            logger.info(
+                "Closed %d File Explorer window(s) with HWND %s",
+                closed,
+                target_path_handler
+            )
+        else:
+            logger.debug(
+                "No File Explorer window found with HWND %s",
+                target_path_handler
+            )
+
+        return closed
+
+    finally:
+        pythoncom.CoUninitialize()
 
 # ==============================================================================================
 #                                          LIST DRIVES

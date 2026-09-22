@@ -167,6 +167,33 @@ def test_open_folder_via_index_failure(mock_search, mock_startfile):
     assert result is False
 
 # ==============================================================================================
+#                                          LIST OPEN FOLDERS
+# ==============================================================================================
+
+@patch("tools.folders.win32com.client.Dispatch")
+def test_list_open_folders_success(mock_dispatch):
+    mock_shell = mock_dispatch.return_value
+
+    mock_window = MagicMock()
+    mock_window.HWND = 123456
+    mock_window.FullName = r"C:\\Windows\\explorer.exe"
+    mock_window.Document.Folder.Self.Path = r"C:\\Users\\Umar\\Documents"
+    mock_window.LocationName = "Documents"
+
+    mock_shell.Windows.return_value = [mock_window]
+
+    result = folders.list_open_folders.func()
+
+    assert result == [
+                {
+                    "hwnd": 123456,
+                    "path": r"C:\\Users\\Umar\\Documents",
+                    "name": "Documents"
+                }
+            ]
+
+
+# ==============================================================================================
 #                                         CLOSE FOLDERS
 # ==============================================================================================
 
@@ -220,6 +247,7 @@ def test_close_folder_by_path_skips_errored_window(mock_dispatch):
 
     assert result == 1
     good_window.Quit.assert_called_once_with()
+
 
 # ==============================================================================================
 #                                          LIST DRIVES

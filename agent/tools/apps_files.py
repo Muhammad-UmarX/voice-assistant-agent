@@ -4,6 +4,7 @@ import os
 import time
 import psutil
 from functools import lru_cache
+import pythoncom
 
 try:
     from rapidfuzz import process
@@ -151,6 +152,8 @@ def search_windows_index(query: str, limit: int = 5):
     if not HAVE_WIN32COM:
         logger.warning("win32com unavailable, skipping Windows index search")
         return []
+    
+    pythoncom.CoInitialize()
 
     try:
         conn = win32com.client.Dispatch("ADODB.Connection")
@@ -186,6 +189,9 @@ def search_windows_index(query: str, limit: int = 5):
     except Exception:
         logger.exception("Windows index search failed for %s", query)
         return []
+    
+    finally:
+        pythoncom.CoUninitialize()
 
 @tool
 def try_index_open(name: str):
