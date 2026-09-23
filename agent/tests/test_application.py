@@ -51,7 +51,7 @@ def test_simple_response_no_tool_call(thread_id_counter):
 def test_tool_call_is_executed_and_final_answer_returned(thread_id_counter):
     """Agent calls a tool, tool result feeds back in, agent produces final answer."""
     tool_call = {
-        "name": "list_open_folders",
+        "name": "try_direct_open",
         "args": {"name": "notepad"},
         "id": "call_1",
     }
