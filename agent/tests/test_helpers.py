@@ -1,7 +1,7 @@
 from langchain_core.runnables import Runnable
 from langgraph.checkpoint.memory import MemorySaver
 
-from workflow import build_workflow
+from agent_workflow import build_workflow
 from nodes import tool_node, agent_node
 from agent_setup import build_agent
 from prompts.prompt import prompt
