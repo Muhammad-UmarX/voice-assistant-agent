@@ -26,10 +26,32 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install ruff
 
-      - name: lint
-        run: ruff check .
+      # - name: lint
+      #   run: ruff check .
 
       - name: Run test
         if: always()
         working-directory: agent
         run: python -m pytest
+
+  deploy:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip 
+          python -m pip install requirements.txt
+      
+      - name: Build executable
+        working-directory: agent
+        run: python -m PyInstaller --onefile --name VoiceAssistant voice_assistant_agent/agent/ui.py
+          

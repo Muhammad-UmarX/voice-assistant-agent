@@ -31,3 +31,4 @@ pytest-mock
 
 # Optional: LangSmith tracing
 langsmith
+pyinstaller
