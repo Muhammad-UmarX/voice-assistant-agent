@@ -45,6 +45,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.14"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
         run: |
@@ -53,5 +55,5 @@ jobs:
       
       - name: Build executable
         working-directory: agent
-        run: python -m PyInstaller --onefile --name VoiceAssistant voice_assistant_agent/agent/ui.py
+        run: python -m PyInstaller --onefile --name VoiceAssistant agent/ui.py
           
